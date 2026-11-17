@@ -1,0 +1,6 @@
+Action,Data,Expected Result
+"Open the application url ""[http://localhost:9050/|http://localhost:9050/]""",,
+"Verify that ""workspace"" is visible",,
+"Upload file ""C:/Users/Sanjeev/Desktop/Sushavon/hydra/backend/data/test.pdf""",,
+"Click on ""Upload and index documents"" button",,
+"Verify that ""workspace"" is visible",,

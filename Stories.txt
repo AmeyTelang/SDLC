@@ -1,0 +1,64 @@
+Validate Product data transformation from `source_product` to `target_product` while preserving the original Product baseline behavior.
+
+Business Rules
+- Exclude Product rows where product_type is Device.
+- Copy product_name to name and formulation to dosage_form.
+- Map Product status: Discontinued=Inactive, Obsolete=Inactive, Active=Active, Withdrawn=Withdrawn, Proposed=Proposed.
+- Set version to unspecified when the source version is blank.
+- Set is_active to the inverse of deprecated_flag.
+  
+LOVs
+status: Proposed=Proposed, Active=Active, Discontinued=Inactive, Withdrawn=Withdrawn, Obsolete=Inactive
+product_type: Small Molecule=Small Molecule, Biologic=Biologic, Device=NA, Combination Product=Combination Product, Diagnostic=Diagnostic, Other=Other
+
+
+-----------------------------------
+
+
+Validate Trial data transformation from source_trialto target_trial while preserving the original Trial baseline behavior.
+
+Business Rules
+
+Trial title: Copy, trim, require a value for review, and truncate to 1000 characters.
+
+Trial phase: Map through Trial Phase LOV. Do not migrate source phase N/A. Unmapped phases become N/A for review.
+
+Trial status_code to status: Resolve the numeric legacy code to a source status and then map through Trial Status LOV.
+
+Trial start_date and end_date: Convert valid legacy dates to ISO dates. Invalid or missing dates remain null. End dates earlier than start dates require review.
+
+Trial last_modified to audit_created_at: Use last_modified when valid; other
+
+LOVs
+
+Phase I=Phase 1, Phase I/II=Phase 2, Phase II=Phase 2, Phase II/III=Phase 3, Phase III=Phase 3, Phase IV=Phase 4, Pilot=Phase 1, N/A=NA
+
+Draft=Planned, Planned=Planned, Recruiting=Recruiting, Active=Active, Suspended=Cancelled, Completed=Completed, Terminated=Cancelled, Archived=Cancelled
+
+
+
+-------------------------
+
+
+Validate Site data transformation from source_site to target_site while preserving the original Site baseline behavior.
+
+Business Rules
+
+Site site_name to name: Copy and truncate to 500 characters.
+
+Site site_code: Trim and ensure uniqueness within organization; append -{site_id} for a duplicate within the same organization.
+
+Site city: Trim and normalize capitalization; blank values become null.
+
+Site country to country_code: Normalize the supplied two-character code to uppercase.
+
+Site enrollment_status to site_status: Map through Site Status LOV.
+
+Site open_date to audit_created_at: Use open_date when valid; otherwise use the configured migration timestamp.
+
+Site close_date to is_open: Set true only when close_date is null and site_status is not Completed, Terminated, or Withdrawn.
+
+LOVs
+
+site_status: Not Started=Not Started, Ready=Ready, Enrolling=Enrolling, Enrolling - On Hold=Enrolling On Hold, Enrolling On Hold=Enrolling On Hold, Closed (Completed)=Completed, Closed (Terminated)=Terminated, Closed (Withdrawn)=Withdrawn
+
